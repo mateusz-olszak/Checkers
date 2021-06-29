@@ -1,0 +1,15 @@
+com/checkers/Piece.java
+ com.checkers.Piece
+com/checkers/Checkers.java
+ com.checkers.Checkers
+com/checkers/Tile.java
+ com.checkers.Tile
+com/checkers/MoveType.java
+ com.checkers.MoveType
+com/checkers/Board.java
+ com.checkers.Board
+ com.checkers.Board$1
+com/checkers/PieceType.java
+ com.checkers.PieceType
+com/checkers/Menu.java
+ com.checkers.Menu
