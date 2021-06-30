@@ -10,10 +10,7 @@ import javafx.stage.Stage;
 
 public class Menu extends StackPane {
 
-    private final Stage stage;
-
     public Menu(final Stage stage) {
-        this.stage = stage;
 
         Button newGame = new Button("Start New Game");
         newGame.setFont(new Font("Lato",22));
@@ -47,10 +44,6 @@ public class Menu extends StackPane {
         pvp.getStyleClass().remove("radio-button");
         pvp.getStyleClass().add("toggle-button");
 
-        pvp.setOnAction(e -> {
-            playAgainstPlayer();
-        });
-
         RadioButton pvc = new RadioButton("PvC");
         pvc.setFont(new Font("Lato", 22));
         pvc.setMinWidth(150);
@@ -75,6 +68,10 @@ public class Menu extends StackPane {
             checkers.start(stage);
         });
 
+        pvp.setOnAction(e -> {
+            playAgainstPlayer(stage, back, start);
+        });
+
         pvc.setOnAction(e -> {
             playAgainstComputer(stage, back, start);
         });
@@ -86,7 +83,49 @@ public class Menu extends StackPane {
         stage.show();
     }
 
-    private void playAgainstPlayer(){}
+    private void playAgainstPlayer(Stage stage, Button back,Button start){
+
+        Label labelNames = new Label("Enter your names: ");
+        labelNames.setFont(new Font("Lato",22));
+        labelNames.setTranslateX(300);
+        labelNames.setTranslateY(200);
+
+        Label playerOneLabel = new Label("Player1: ");
+        playerOneLabel.setFont(new Font("Lato",22));
+        playerOneLabel.setTranslateX(250);
+        playerOneLabel.setTranslateY(250);
+
+        Label playerTwoLabel = new Label("Player2: ");
+        playerTwoLabel.setFont(new Font("Lato",22));
+        playerTwoLabel.setTranslateX(250);
+        playerTwoLabel.setTranslateY(300);
+
+        TextField playerOne = new TextField();
+        playerOne.setTranslateX(400);
+        playerOne.setTranslateY(250);
+
+        TextField playerTwo = new TextField();
+        playerTwo.setTranslateX(400);
+        playerTwo.setTranslateY(300);
+
+        back.setOnAction(e -> {
+            printGameOptions(stage);
+        });
+
+        start.setOnAction(e -> {
+            Board board = new Board();
+            board.printBoard(stage, playerOne, playerTwo);
+        });
+
+        Pane pane = new Pane();
+        pane.setBackground(new Background(new BackgroundFill(Color.WHEAT, CornerRadii.EMPTY, Insets.EMPTY)));
+        pane.getChildren().addAll(labelNames, playerOneLabel, playerTwoLabel, playerOne, playerTwo, back, start);
+
+        Scene scene = new Scene(pane, 800, 800);
+        stage.setTitle("Checkers");
+        stage.setScene(scene);
+        stage.show();
+    }
 
     private void playAgainstComputer(Stage stage, Button back, Button start){
         Pane pane = new Pane();
@@ -136,7 +175,8 @@ public class Menu extends StackPane {
 
         start.setOnAction(event -> {
             Board board = new Board();
-            board.printBoard(stage, playerName);
+            TextField computer = new TextField("Computer");
+            board.printBoard(stage, playerName, computer);
         });
 
         pane.getChildren().addAll(easy, medium, hard, nameLabel, playerName, back, start);

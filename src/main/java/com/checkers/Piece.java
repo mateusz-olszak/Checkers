@@ -8,7 +8,7 @@ import static com.checkers.Board.tileSize;
 
 public class Piece extends StackPane {
 
-    private final PieceType type;
+    private PieceType type;
     private double mouseX, mouseY;
     private double oldX, oldY;
 
@@ -26,7 +26,7 @@ public class Piece extends StackPane {
         bg.setTranslateY((tileSize - tileSize * 0.26 * 2) / 2 + tileSize * 0.07);
 
         Ellipse ellipse = new Ellipse(tileSize * 0.3125, tileSize * 0.26);
-        ellipse.setFill(type == PieceType.RED ? Color.valueOf("c40003") : Color.valueOf("fff9f4"));
+        ellipse.setFill(type == PieceType.redDown ? Color.valueOf("c40003") : Color.valueOf("fff9f4"));
         ellipse.setStroke(Color.BLACK);
         ellipse.setStrokeWidth(tileSize * 0.03);
 
@@ -62,6 +62,10 @@ public class Piece extends StackPane {
 
     public PieceType getType() {
         return type;
+    }
+
+    public void setType(PieceType type){
+        this.type = type;
     }
 
     public void abortMove(){

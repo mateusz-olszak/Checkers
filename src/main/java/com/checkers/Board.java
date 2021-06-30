@@ -18,9 +18,10 @@ public class Board {
     private Group tileGroup = new Group();
     private Group pieceGroup = new Group();
     private Piece killedPiece;
-    private Piece secondKilledPiece;
+    private boolean whiteTurn = true;
+    private boolean redTurn = false;
 
-    public void printBoard(Stage stage, TextField playerName){
+    public void printBoard(Stage stage, TextField playerOne, TextField playerTwo){
 
         Pane pane = new Pane();
         pane.getChildren().addAll(tileGroup, pieceGroup);
@@ -33,11 +34,11 @@ public class Board {
                 Piece piece = null;
 
                 if (y < 3 && (x + y) % 2 != 0){
-                    piece = placePiece(PieceType.RED, x, y);
+                    piece = placePiece(PieceType.redDown, x, y);
                 }
 
                 if (y > 4 && (x + y) % 2 != 0){
-                    piece = placePiece(PieceType.WHITE, x, y);
+                    piece = placePiece(PieceType.whiteUp, x, y);
                 }
 
                 if (piece != null){
@@ -48,12 +49,12 @@ public class Board {
             }
         }
 
-        Label computer = new Label("Computer");
+        Label computer = new Label(playerTwo.getText());
         computer.setFont(new Font("Lato",20));
         computer.setTranslateX(5);
         computer.setTranslateY(100);
 
-        Label player = new Label(playerName.getText());
+        Label player = new Label(playerOne.getText());
         player.setFont(new Font("Lato", 20));
         player.setTranslateX(5);
         player.setTranslateY(700);
@@ -108,18 +109,6 @@ public class Board {
                     board[centeringPiece(killedPiece.getOldX())][centeringPiece(killedPiece.getOldY())].setPiece(null);
                     pieceGroup.getChildren().remove(killedPiece);
                     break;
-                case DOUBLEKILL:
-                    piece.move(newX,newY);
-                    board[oldX][oldY].setPiece(null);
-                    board[newX][newY].setPiece(piece);
-
-                    board[centeringPiece(killedPiece.getOldX())][centeringPiece(killedPiece.getOldY())].setPiece(null);
-                    board[centeringPiece(secondKilledPiece.getOldX())][centeringPiece(secondKilledPiece.getOldY())].setPiece(null);
-                    pieceGroup.getChildren().remove(killedPiece);
-                    pieceGroup.getChildren().remove(secondKilledPiece);
-                    break;
-                case TRIPLEKILL:
-                    break;
             }
 
         });
@@ -128,44 +117,57 @@ public class Board {
     }
 
     private MoveType validateMove(Piece piece, int newX, int newY){
-        if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0)
-            return MoveType.NONE;
 
-        int oldX = centeringPiece(piece.getOldX());
-        int oldY = centeringPiece(piece.getOldY());
+        if (whiteTurn){
+            if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0 && piece.getType() == PieceType.whiteUp)
+                return MoveType.NONE;
 
-        if (Math.abs(newX - oldX) == 1 && newY - oldY == piece.getType().moveDir){
-            return MoveType.NORMAL;
-        }else if (Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * 2){
+            int oldX = centeringPiece(piece.getOldX());
+            int oldY = centeringPiece(piece.getOldY());
 
-            int x1 = oldX + (newX - oldX) /2;
-            int y1 = oldY + (newY - oldY) /2;
-
-            if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
-                killedPiece = board[x1][y1].getPiece();
-                return MoveType.KILL;
+            if (Math.abs(newX - oldX) == 1 && newY - oldY == piece.getType().moveDir && piece.getType() == PieceType.whiteUp){
+                whiteTurn = false;
+                redTurn = true;
+                return MoveType.NORMAL;
             }
-        }else if (Math.abs(newX - oldX) == 4 && newY - oldY == piece.getType().moveDir * 4){
+            else if (Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * 2){
 
+                boolean forcedKill = forcedKill(piece, newX, oldX, newY, oldY);
 
-            int x1 = oldX + (newX - oldX) / 4;
-            int y1 = oldY + (newY - oldY) / 4;
-
-            int x2 = newX + oldX / oldX;
-            int y2 = newY + oldY / oldY;
-
-            System.out.println("x1: " + x1 + " x2: " + y1);
-
-
-            if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
-                killedPiece = board[x1][y1].getPiece();
-                secondKilledPiece = board[x2][y2].getPiece();
-                return MoveType.DOUBLEKILL;
+                if (forcedKill) {
+                    whiteTurn = false;
+                    redTurn = true;
+                    return MoveType.KILL;
+                }
             }
-
-        }else if (Math.abs(newX - oldX) == 6 && newY - oldY == piece.getType().moveDir * 6){
-            return MoveType.DOUBLEKILL;
         }
+
+        else if (redTurn){
+            if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0 && piece.getType() == PieceType.redDown)
+                return MoveType.NONE;
+
+            int oldX = centeringPiece(piece.getOldX());
+            int oldY = centeringPiece(piece.getOldY());
+
+            if (Math.abs(newX - oldX) == 1 && newY - oldY == piece.getType().moveDir && piece.getType() == PieceType.redDown){
+                redTurn = false;
+                whiteTurn = true;
+                return MoveType.NORMAL;
+            }
+            else if (Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * 2 && piece.getType() == PieceType.redDown){
+
+                boolean forcedKill = forcedKill(piece, newX, oldX, newY, oldY);
+
+                if (forcedKill) {
+                    redTurn = false;
+                    whiteTurn = true;
+                    return MoveType.KILL;
+                }
+            }
+        }
+
+
+
 
         return MoveType.NONE;
     }
@@ -173,4 +175,24 @@ public class Board {
     private int centeringPiece(double pixel){
         return (int) (pixel + tileSize / 2) / tileSize;
     }
+
+    private boolean forcedKill(Piece piece, int newX, int oldX, int newY, int oldY){
+
+        int x1 = oldX + (newX - oldX) /2;
+        int y1 = oldY + (newY - oldY) /2;
+        System.out.println("herre 1");
+        if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+            if (newY > oldY){
+                System.out.println("here 2");
+                piece.setType(PieceType.whiteDown);
+                killedPiece = board[x1][y1].getPiece();
+                return true;
+            }
+            else return true;
+        }
+
+
+        return false;
+    }
+
 }
