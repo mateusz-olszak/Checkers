@@ -118,49 +118,66 @@ public class Board {
 
     private MoveType validateMove(Piece piece, int newX, int newY){
 
+        int oldX = centeringPiece(piece.getOldX());
+        int oldY = centeringPiece(piece.getOldY());
+
+        int x1 = oldX + (newX - oldX) /2;
+        int y1 = oldY + (newY - oldY) /2;
+
         if (whiteTurn){
+
+            if (y1 < newY && board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType())
+                piece.setType(PieceType.whiteDown);
+            else
+                piece.setType(PieceType.whiteUp);
+
             if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0 && piece.getType() == PieceType.whiteUp)
                 return MoveType.NONE;
-
-            int oldX = centeringPiece(piece.getOldX());
-            int oldY = centeringPiece(piece.getOldY());
 
             if (Math.abs(newX - oldX) == 1 && newY - oldY == piece.getType().moveDir && piece.getType() == PieceType.whiteUp){
                 whiteTurn = false;
                 redTurn = true;
                 return MoveType.NORMAL;
             }
-            else if (Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * 2){
+            else if (Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * 2 || Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * -2){
+                piece.setType(PieceType.whiteUp);
+//                boolean forcedKill = forcedKill(piece, newX, oldX, newY, oldY);
 
-                boolean forcedKill = forcedKill(piece, newX, oldX, newY, oldY);
 
-                if (forcedKill) {
+                if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
                     whiteTurn = false;
                     redTurn = true;
+                    killedPiece = board[x1][y1].getPiece();
                     return MoveType.KILL;
                 }
             }
         }
 
-        else if (redTurn){
+        else if (redTurn){//y1=1
+            piece.setType(PieceType.redDown);
+
+            if (y1 < newY && board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType())
+                piece.setType(PieceType.redUp);
+            else
+                piece.setType(PieceType.redDown);
             if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0 && piece.getType() == PieceType.redDown)
                 return MoveType.NONE;
-
-            int oldX = centeringPiece(piece.getOldX());
-            int oldY = centeringPiece(piece.getOldY());
 
             if (Math.abs(newX - oldX) == 1 && newY - oldY == piece.getType().moveDir && piece.getType() == PieceType.redDown){
                 redTurn = false;
                 whiteTurn = true;
                 return MoveType.NORMAL;
             }
-            else if (Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * 2 && piece.getType() == PieceType.redDown){
+            else if (Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * 2 || Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * -2){
 
-                boolean forcedKill = forcedKill(piece, newX, oldX, newY, oldY);
+//                boolean forcedKill = forcedKill(piece, newX, oldX, newY, oldY)
+                // redX=4, redY=3, wX=5, wY=4
 
-                if (forcedKill) {
+
+                if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
                     redTurn = false;
                     whiteTurn = true;
+                    killedPiece = board[x1][y1].getPiece();
                     return MoveType.KILL;
                 }
             }
@@ -177,20 +194,6 @@ public class Board {
     }
 
     private boolean forcedKill(Piece piece, int newX, int oldX, int newY, int oldY){
-
-        int x1 = oldX + (newX - oldX) /2;
-        int y1 = oldY + (newY - oldY) /2;
-        System.out.println("herre 1");
-        if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
-            if (newY > oldY){
-                System.out.println("here 2");
-                piece.setType(PieceType.whiteDown);
-                killedPiece = board[x1][y1].getPiece();
-                return true;
-            }
-            else return true;
-        }
-
 
         return false;
     }
