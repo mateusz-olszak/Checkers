@@ -1,6 +1,5 @@
 package com.checkers;
 
-import com.sun.security.jgss.GSSUtil;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -126,6 +125,12 @@ public class Board {
         int x1 = oldX + (newX - oldX) /2;
         int y1 = oldY + (newY - oldY) /2;
 
+        if (piece.getColor().equals(white) && newY == 0)
+            piece.setQueen(piece, piece.getType(), newY);
+
+        if (piece.getColor().equals(red) && newY == 7)
+            piece.setQueen(piece, piece.getType(), newY);
+
         if (whiteTurn){
 
             if (y1 < newY && board[x1][y1].hasPiece() && board[x1][y1].getPiece().getColor().equals(red) && piece.getColor().equals(white))
@@ -143,6 +148,9 @@ public class Board {
                     killedPiece = board[x1][y1].getPiece();
                     return MoveType.KILL;
                 }
+            }
+            else if (piece.getColor().equals(white) && piece.getType() == PieceType.queenDown){
+                return MoveType.NORMAL;
             }
         }
 

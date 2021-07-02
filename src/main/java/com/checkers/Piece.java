@@ -4,6 +4,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+
 
 import static com.checkers.Board.tileSize;
 
@@ -13,6 +17,7 @@ public class Piece extends StackPane {
     private double mouseX, mouseY;
     private double oldX, oldY;
     private Ellipse ellipse;
+    private Ellipse bg;
     private Color color;
 
     public Piece(final PieceType type, Color color, int x, int y) {
@@ -21,7 +26,7 @@ public class Piece extends StackPane {
 
         move(x, y);
 
-        Ellipse bg = new Ellipse(tileSize * 0.3125, tileSize * 0.26);
+        bg = new Ellipse(tileSize * 0.3125, tileSize * 0.26);
         bg.setFill(Color.BLACK);
         bg.setStroke(Color.BLACK);
         bg.setStrokeWidth(tileSize * 0.03);
@@ -45,6 +50,7 @@ public class Piece extends StackPane {
         setOnMouseDragged(e -> {
             relocate(e.getSceneX() - mouseX + oldX, e.getSceneY() - mouseY + oldY);
         });
+
 
         getChildren().addAll(bg, ellipse);
 
@@ -78,5 +84,19 @@ public class Piece extends StackPane {
 
     public Paint getColor() {
         return color;
+    }
+
+    public void setQueen(Piece piece, PieceType type, int newY){
+        Text text = new Text("Q");
+        text.setFont(Font.font("Lato", FontWeight.BOLD, 22));
+        text.setTranslateX(18);
+        text.setTranslateY(20);
+
+        piece.getChildren().add(text);
+
+        if (piece.getColor().equals(Color.valueOf("fff9f4")))
+            piece.setType(PieceType.queenDown);
+        else
+            piece.setType(PieceType.queenUP);
     }
 }
