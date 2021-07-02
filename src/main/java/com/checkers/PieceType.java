@@ -1,12 +1,15 @@
 package com.checkers;
 
 public enum PieceType {
-    whiteDown(1),
-    white(0),
-    whiteUp(-1),
-    redDown(1),
-    red(0),
-    redUp(-1);
+    UP(-1),
+    LEVEL(0),
+    DOWN(1);
+//    whiteDown(1),
+//    white(0),
+//    whiteUp(-1),
+//    redDown(1),
+//    red(0),
+//    redUp(-1);
 
     int moveDir;
 

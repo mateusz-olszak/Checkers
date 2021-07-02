@@ -2,6 +2,7 @@ package com.checkers;
 
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Ellipse;
 
 import static com.checkers.Board.tileSize;
@@ -11,9 +12,12 @@ public class Piece extends StackPane {
     private PieceType type;
     private double mouseX, mouseY;
     private double oldX, oldY;
+    private Ellipse ellipse;
+    private Color color;
 
-    public Piece(final PieceType type, int x, int y) {
+    public Piece(final PieceType type, Color color, int x, int y) {
         this.type = type;
+        this.color = color;
 
         move(x, y);
 
@@ -25,8 +29,8 @@ public class Piece extends StackPane {
         bg.setTranslateX((tileSize - tileSize * 0.3125 * 2) / 2);
         bg.setTranslateY((tileSize - tileSize * 0.26 * 2) / 2 + tileSize * 0.07);
 
-        Ellipse ellipse = new Ellipse(tileSize * 0.3125, tileSize * 0.26);
-        ellipse.setFill(type == PieceType.redDown ? Color.valueOf("c40003") : Color.valueOf("fff9f4"));
+        ellipse = new Ellipse(tileSize * 0.3125, tileSize * 0.26);
+        ellipse.setFill(color);
         ellipse.setStroke(Color.BLACK);
         ellipse.setStrokeWidth(tileSize * 0.03);
 
@@ -70,5 +74,9 @@ public class Piece extends StackPane {
 
     public void abortMove(){
         relocate(oldX, oldY);
+    }
+
+    public Paint getColor() {
+        return color;
     }
 }
