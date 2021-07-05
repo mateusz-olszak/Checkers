@@ -86,7 +86,7 @@ public class Piece extends StackPane {
         return color;
     }
 
-    public void setQueen(Piece piece, PieceType type, int newY){
+    public void setQueen(Piece piece){
         Text text = new Text("Q");
         text.setFont(Font.font("Lato", FontWeight.BOLD, 22));
         text.setTranslateX(18);
@@ -95,8 +95,8 @@ public class Piece extends StackPane {
         piece.getChildren().add(text);
 
         if (piece.getColor().equals(Color.valueOf("fff9f4")))
-            piece.setType(PieceType.queenDown);
+            piece.setType(PieceType.queenWhite);
         else
-            piece.setType(PieceType.queenUP);
+            piece.setType(PieceType.queenRed);
     }
 }

@@ -126,3 +126,111 @@ public class ExtraClass {
 //        else if (Math.abs(newX - oldX) == 6 && newY - oldY == piece.getType().moveDir * 6){
 //            return MoveType.TRIPLEKILL;
 //        }
+
+//            if (piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite && board[x1][y1].hasPiece() && board[x1][y1].getPiece().getColor().equals(red)){
+//                    System.out.println("white kill queen");
+//                    killedPiece = board[x1][y1].getPiece();
+//                    return MoveType.KILL;
+//                    }
+//                    if (piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite && board[x1-1][y1+1].hasPiece() && board[x1-1][y1+1].getPiece().getColor().equals(red) && newX < x1-1 && x1 > 1){
+//        System.out.println("white kill queen");
+//        killedPiece = board[x1-1][y1+1].getPiece();
+//        return MoveType.KILL;
+//        }
+//        if (piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite && board[x1-2][y1+2].hasPiece() && board[x1-2][y1+2].getPiece().getColor().equals(red) && newX < x1-2 && x1 > 2){
+//        System.out.println("white kill queen");
+//        killedPiece = board[x1-2][y1+2].getPiece();
+//        return MoveType.KILL;
+//        }
+//        if (piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite && board[x1+1][y1-1].hasPiece() && board[x1+1][y1-1].getPiece().getColor().equals(red) && newX < x1+1){
+//        System.out.println("white kill queen");
+//        killedPiece = board[x1+1][y1-1].getPiece();
+//        return MoveType.KILL;
+//        }
+
+
+//            if (piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite && board[newX+1][newY-1].hasPiece() && board[newX+1][newY-1].getPiece().getColor().equals(red)){
+//                    System.out.println("white queen kill1: " + (newX+1) + " " + (newY-1));
+//                    killedPiece = board[newX+1][newY-1].getPiece();
+//                    return MoveType.KILL;
+//                    }
+//                    if (piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite && board[newX+2][newY-2].hasPiece() && board[newX+2][newY-2].getPiece().getColor().equals(red)){
+//                    System.out.println("white queen kill2: " + (newX+2) + " " + (newY-2));
+//                    killedPiece = board[newX+2][newY-2].getPiece();
+//                    return MoveType.KILL;
+//                    }
+//                    if (piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite && board[newX+3][newY-3].hasPiece() && board[newX+3][newY-3].getPiece().getColor().equals(red)){
+//                    System.out.println("white queen kill3: " + (newX+3) + " " + (newY-3));
+//                    killedPiece = board[newX+3][newY-3].getPiece();
+//                    return MoveType.KILL;
+//                    }
+//                    if (piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite && board[newX+4][newY-4].hasPiece() && board[newX+4][newY-4].getPiece().getColor().equals(red)){
+//                    System.out.println("white queen kill4: " + (newX+4) + " " + (newY-4));
+//                    killedPiece = board[newX+4][newY-4].getPiece();
+//                    return MoveType.KILL;
+//                    }
+//                    if (piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite && board[newX+5][newY-5].hasPiece() && board[newX+5][newY-5].getPiece().getColor().equals(red)){
+//                    System.out.println("white queen kill5: " + (newX+5) + " " + (newY-5));
+//                    killedPiece = board[newX+5][newY-5].getPiece();
+//                    return MoveType.KILL;
+//                    }
+//                    if (piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite && board[newX+6][newY-6].hasPiece() && board[newX+6][newY-6].getPiece().getColor().equals(red)){
+//                    System.out.println("white queen kill6: " + (newX+6) + " " + (newY-6));
+//                    return MoveType.KILL;
+//                    }
+
+
+/// ####################################
+//            if (newY - oldY == piece.getType().moveDir * newY && piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite){
+//                    /// move queen right
+//                    if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getColor().equals(red) && oldX - newX > 0){
+//                    killedPiece = board[x1][y1].getPiece();
+//                    return MoveType.KILL;
+//                    }
+//                    if (board[x1+1][y1-1].hasPiece() && board[x1+1][y1-1].getPiece().getColor().equals(red) && oldX - newX > 0){
+//                    killedPiece = board[x1+1][y1-1].getPiece();
+//                    return MoveType.KILL;
+//                    }
+//                    if (board[x1+2][y1-2].hasPiece() && board[x1+2][y1-2].getPiece().getColor().equals(red) && oldX - newX > 0){
+//                    killedPiece = board[x1+2][y1-2].getPiece();
+//                    return MoveType.KILL;
+//                    }
+//                    if (board[x1-1][y1+1].hasPiece() && board[x1-1][y1+1].getPiece().getColor().equals(red) && oldX - newX > 0){
+//                    killedPiece = board[x1-1][y1+1].getPiece();
+//                    return MoveType.KILL;
+//                    }
+//                    if (board[x1-2][y1+2].hasPiece() && board[x1-2][y1+2].getPiece().getColor().equals(red) && oldX - newX > 0){
+//                    killedPiece = board[x1-2][y1+2].getPiece();
+//                    return MoveType.KILL;
+//                    }
+//                    if (board[x1-3][y1+3].hasPiece() && board[x1-3][y1+3].getPiece().getColor().equals(red) && oldX - newX > 0){
+//                    killedPiece = board[x1-3][y1+3].getPiece();
+//                    return MoveType.KILL;
+//                    }
+//
+//                    /// move queen left
+//                    if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getColor().equals(red) && oldX - newX < 0){
+//        killedPiece = board[x1][y1].getPiece();
+//        return MoveType.KILL;
+//        }
+//        if (board[x1-1][y1-1].hasPiece() && board[x1-1][y1-1].getPiece().getColor().equals(red) && oldX - newX < 0){
+//        killedPiece = board[x1-1][y1-1].getPiece();
+//        return MoveType.KILL;
+//        }
+//        if (board[x1-2][y1-2].hasPiece() && board[x1-2][y1-2].getPiece().getColor().equals(red) && oldX - newX < 0){
+//        killedPiece = board[x1-2][y1-2].getPiece();
+//        return MoveType.KILL;
+//        }
+//        if (board[x1+1][y1+1].hasPiece() && board[x1+1][y1+1].getPiece().getColor().equals(red) && oldX - newX < 0){
+//        killedPiece = board[x1+1][y1+1].getPiece();
+//        return MoveType.KILL;
+//        }
+//        if (board[x1+2][y1+2].hasPiece() && board[x1+2][y1+2].getPiece().getColor().equals(red) && oldX - newX < 0){
+//        killedPiece = board[x1+2][y1+2].getPiece();
+//        return MoveType.KILL;
+//        }
+//        if (board[x1+3][y1+3].hasPiece() && board[x1+3][y1+3].getPiece().getColor().equals(red) && oldX - newX < 0){
+//        killedPiece = board[x1+3][y1+3].getPiece();
+//        return MoveType.KILL;
+//        }
+//        }

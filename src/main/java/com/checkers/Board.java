@@ -125,41 +125,47 @@ public class Board {
         int x1 = oldX + (newX - oldX) /2;
         int y1 = oldY + (newY - oldY) /2;
 
-        if (piece.getColor().equals(white) && newY == 0)
-            piece.setQueen(piece, piece.getType(), newY);
+        if (piece.getColor().equals(white) && oldY == 0 || piece.getColor().equals(white) && newY == 0 && oldY == 1 || piece.getColor().equals(white) && newY == 0 && oldY == 2)
+            piece.setQueen(piece);
 
-        if (piece.getColor().equals(red) && newY == 7)
-            piece.setQueen(piece, piece.getType(), newY);
+        if (piece.getColor().equals(red) && oldY == 7 || piece.getColor().equals(red) && newY == 7 && oldY == 6 || piece.getColor().equals(red) && newY == 7 && oldY == 5)
+            piece.setQueen(piece);
 
         if (whiteTurn){
 
-            if (y1 < newY && board[x1][y1].hasPiece() && board[x1][y1].getPiece().getColor().equals(red) && piece.getColor().equals(white))
+            if (y1 < newY && board[x1][y1].hasPiece() && board[x1][y1].getPiece().getColor().equals(red) && piece.getColor().equals(white) && piece.getType() != PieceType.queenWhite)
                 piece.setType(PieceType.UP);
 
             if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0)
                 return MoveType.NONE;
 
-            if (Math.abs(newX - oldX) == 1 && newY - oldY == piece.getType().moveDir && piece.getType() == PieceType.UP && piece.getColor().equals(white)){
+            if (Math.abs(newX - oldX) == 1 && newY - oldY == piece.getType().moveDir && piece.getType() == PieceType.UP && piece.getColor().equals(white))
                 return MoveType.NORMAL;
-            }
-            else if (Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * 2 && piece.getColor().equals(white) || Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * -2 && piece.getColor().equals(white)){
+            if (Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * 2 && piece.getColor().equals(white) || Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * -2 && piece.getColor().equals(white)){
 
                 if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
                     killedPiece = board[x1][y1].getPiece();
                     return MoveType.KILL;
                 }
             }
-            else if (piece.getColor().equals(white) && piece.getType() == PieceType.queenDown){
+            //queen:
+            if (oldX - newX == 1 * (newY-oldY) && piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite ||
+                Math.abs(newX - oldX) == 1 * (newY-oldY) && piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite ||
+                oldX - newX == 1 * (oldY-newY) && piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite
+            ){
                 return MoveType.NORMAL;
             }
         }
 
         else {
 
+
             if (y1 < newY && board[x1][y1].hasPiece() && board[x1][y1].getPiece().getColor().equals(white) && piece.getColor().equals(red))
                 piece.setType(PieceType.UP);
-            if (piece.getColor().equals(red))
+
+            if (piece.getColor().equals(red) && piece.getType() != PieceType.queenRed) {
                 piece.setType(PieceType.DOWN);
+            }
 
             if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0 && piece.getType() == PieceType.UP)
                 return MoveType.NONE;
@@ -173,6 +179,13 @@ public class Board {
                     killedPiece = board[x1][y1].getPiece();
                     return MoveType.KILL;
                 }
+            }
+            //queen:
+            if (newX - oldX == 1 * (oldY-newY) && piece.getColor().equals(red) && piece.getType() == PieceType.queenRed ||
+                Math.abs(newX - oldX) == 1 * (newY-oldY) && piece.getColor().equals(red) && piece.getType() == PieceType.queenRed ||
+                oldX - newX == 1 * (oldY-newY) && piece.getColor().equals(red) && piece.getType() == PieceType.queenRed
+            ){
+                return MoveType.NORMAL;
             }
         }
 
@@ -188,9 +201,9 @@ public class Board {
 
     private boolean forcedKill(Piece piece, int oldX, int oldY, int newX, int newY){
 
-        if (newX != 7 && !board[oldX+2][oldY-2].hasPiece() && board[oldX+1][oldY-1].hasPiece() && board[oldX+1][oldY-1].getPiece().getType() != piece.getType() && newX != oldX+2 && newY != oldY-2) {
-            return false;
-        }
+//        if (newX != 7 && !board[oldX+2][oldY-2].hasPiece() && board[oldX+1][oldY-1].hasPiece() && board[oldX+1][oldY-1].getPiece().getType() != piece.getType() && newX != oldX+2 && newY != oldY-2) {
+//            return false;
+//        }
 
 //        if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType() && newX != x1+1 && newY != y1-1)
 //            System.out.println("Detected for white");
