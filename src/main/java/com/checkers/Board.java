@@ -10,6 +10,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class Board {
     private final Tile[][] board = new Tile[8][8];
     private final int row = 8;
@@ -149,17 +151,10 @@ public class Board {
                 }
             }
             //queen:
-            if (oldX - newX == 1 * (newY-oldY) && piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite ||
-                Math.abs(newX - oldX) == 1 * (newY-oldY) && piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite ||
-                oldX - newX == 1 * (oldY-newY) && piece.getColor().equals(white) && piece.getType() == PieceType.queenWhite
-            ){
-                return MoveType.NORMAL;
-            }
+            return validateQueen(piece, white, red, PieceType.queenWhite,oldX, oldY, newX, newY);
         }
 
         else {
-
-
             if (y1 < newY && board[x1][y1].hasPiece() && board[x1][y1].getPiece().getColor().equals(white) && piece.getColor().equals(red))
                 piece.setType(PieceType.UP);
 
@@ -181,18 +176,8 @@ public class Board {
                 }
             }
             //queen:
-            if (newX - oldX == 1 * (oldY-newY) && piece.getColor().equals(red) && piece.getType() == PieceType.queenRed ||
-                Math.abs(newX - oldX) == 1 * (newY-oldY) && piece.getColor().equals(red) && piece.getType() == PieceType.queenRed ||
-                oldX - newX == 1 * (oldY-newY) && piece.getColor().equals(red) && piece.getType() == PieceType.queenRed
-            ){
-                return MoveType.NORMAL;
-            }
+            return validateQueen(piece, red, white, PieceType.queenRed,oldX, oldY, newX, newY);
         }
-
-
-
-
-        return MoveType.NONE;
     }
 
     private int centeringPiece(double pixel){
@@ -212,4 +197,66 @@ public class Board {
 
     }
 
+    private MoveType validateQueen(Piece piece, Color color, Color rivalColor, PieceType type,int oldX, int oldY, int newX, int newY) {
+        if (newX < oldX) {
+            if (oldX - newX == 1 * (newY - oldY) && piece.getColor().equals(color) && piece.getType() == type) {
+                int i = oldX;
+                int j = oldY;
+                while (i != newX) {
+                    if (board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor)) {
+                        killedPiece = board[i][j].getPiece();
+                        return MoveType.KILL;
+                    }
+                    i--;
+                    j++;
+                }
+            }
+            if (newX - oldX == 1 * (newY - oldY) && piece.getColor().equals(color) && piece.getType() == type) {
+                int i = oldX;
+                int j = oldY;
+                while (i != newX) {
+                    if (board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor)) {
+                        killedPiece = board[i][j].getPiece();
+                        return MoveType.KILL;
+                    }
+                    i--;
+                    j--;
+                }
+            }
+        } else if (newX > oldX) {
+            if (newX - oldX == 1 * (newY - oldY) && piece.getColor().equals(color) && piece.getType() == type) {
+                int i = oldX;
+                int j = oldY;
+                while (i != newX) {
+                    if (board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor)) {
+                        killedPiece = board[i][j].getPiece();
+                        return MoveType.KILL;
+                    }
+                    i++;
+                    j++;
+                }
+            }
+            if (oldX - newX == 1 * (newY - oldY) && piece.getColor().equals(color) && piece.getType() == type) {
+                int i = oldX;
+                int j = oldY;
+                while (i != newX) {
+                    if (board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor)) {
+                        killedPiece = board[i][j].getPiece();
+                        return MoveType.KILL;
+                    }
+                    i++;
+                    j--;
+                }
+            }
+        }
+
+        if (oldX - newX == 1 * (newY - oldY) && piece.getColor().equals(color) && piece.getType() == type ||
+            Math.abs(newX - oldX) == 1 * (newY - oldY) && piece.getColor().equals(color) && piece.getType() == type ||
+            oldX - newX == 1 * (oldY - newY) && piece.getColor().equals(color) && piece.getType() == type
+        ) {
+            return MoveType.NORMAL;
+        }
+
+        return MoveType.NONE;
+    }
 }
