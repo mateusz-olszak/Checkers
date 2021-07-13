@@ -152,6 +152,11 @@ public class Board {
                     whiteTurn = false;
                     turnLabel.setText("red's\nturn");
                     return MoveType.NORMAL;
+                }else{
+                    System.out.println("here normal white");
+                    whiteTurn = false;
+                    turnLabel.setText("red's\nturn");
+                    return MoveType.NORMAL;
                 }
             }
 
@@ -193,10 +198,12 @@ public class Board {
 
             if (Math.abs(newX - oldX) == 1 && newY - oldY == piece.getType().moveDir && piece.getType() == PieceType.DOWN && piece.getColor().equals(red)) {
                 if (!forcedKill(white,newX,newY,oldX,oldY)){
+                    System.out.println("here normal red");
                     whiteTurn = true;
                     turnLabel.setText("white's\nturn");
                     return MoveType.NORMAL;
                 }
+                else System.out.println("normal red if true");
             }
             if (Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * 2 && piece.getColor().equals(red) || Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * -2 && piece.getColor().equals(red)) {
 
@@ -235,6 +242,7 @@ public class Board {
             if (!board[newX-2][newY-2].hasPiece()){
                 forcedX = newX - 2;
                 forcedY = newY - 2;
+                System.out.println("1 returned true");
                 return true;
             }
         }
@@ -306,6 +314,7 @@ public class Board {
             if (oldX - newX == 1 * (newY - oldY) && piece.getColor().equals(color) && piece.getType() == type) {
                 while (i != newX) {
                     if (board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor)) {
+                        System.out.println("Queen here");
                         killedPiece = board[i][j].getPiece();
                         turnLabel.setText(whiteTurn ? "red's\nturn" : "white's\nturn");
                         return MoveType.KILL;
@@ -320,6 +329,7 @@ public class Board {
             Math.abs(newX - oldX) == 1 * (newY - oldY) && piece.getColor().equals(color) && piece.getType() == type ||
             oldX - newX == 1 * (oldY - newY) && piece.getColor().equals(color) && piece.getType() == type
         ) {
+            System.out.println("queen normal here");
             turnLabel.setText(whiteTurn ? "red's\nturn" : "white's\nturn");
             return MoveType.NORMAL;
         }
