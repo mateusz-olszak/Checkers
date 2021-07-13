@@ -176,10 +176,7 @@ public class Board {
                 }
             }
 
-            //queen:
-            if (piece.getType() == PieceType.queenWhite){
-                return validateQueen(piece, white, red, piece.getType(),oldX, oldY, newX, newY);
-            }
+
         }
 
         else {
@@ -229,10 +226,15 @@ public class Board {
         }
 
         //queen:
+        if (piece.getType() == PieceType.queenWhite){
+            return validateQueen(piece, white, red, piece.getType(),oldX, oldY, newX, newY);
+        }
+
+        //queen:
         if (piece.getType() == PieceType.queenRed){
             return validateQueen(piece, red, white, piece.getType(),oldX, oldY, newX, newY);
         }
-        System.out.println("validate main false");
+        System.out.println("validate main false, turn: " + whiteTurn);
         return MoveType.NONE;
     }
 
@@ -290,6 +292,7 @@ public class Board {
                     if (board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor)) {
                         killedPiece = board[i][j].getPiece();
                         turnLabel.setText(whiteTurn ? "red's\nturn" : "white's\nturn");
+                        whiteTurn = whiteTurn ? false : true;
                         return MoveType.KILL;
                     }
                     i--;
@@ -301,6 +304,7 @@ public class Board {
                     if (board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor)) {
                         killedPiece = board[i][j].getPiece();
                         turnLabel.setText(whiteTurn ? "red's\nturn" : "white's\nturn");
+                        whiteTurn = whiteTurn ? false : true;
                         return MoveType.KILL;
                     }
                     i--;
@@ -312,7 +316,33 @@ public class Board {
                 while (i != newX) {
                     if (board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor)) {
                         killedPiece = board[i][j].getPiece();
-                        turnLabel.setText(whiteTurn ? "red's\nturn" : "white's\nturn");
+                        System.out.println("Q++ " + whiteTurn);
+                        if (forcedKill(rivalColor,newX, newY, oldX, oldY)){
+                            System.out.println("Queen here1");
+                            if (color == white){
+                                System.out.println("QN1");
+                                whiteTurn = true;
+                                turnLabel.setText("white's\nturn");
+                            }
+                            else{
+                                System.out.println("QN2");
+                                whiteTurn = false;
+                                turnLabel.setText("red's\nturn");
+                            }
+                        }
+                        else{
+                            if (color.equals(white)){
+                                System.out.println("QN3");
+                                whiteTurn = false;
+                                turnLabel.setText("red's\nturn");
+                            }
+                            else{
+                                System.out.println("QN4");
+                                whiteTurn = true;
+                                turnLabel.setText("white's\nturn");
+                            }
+                        }
+                        System.out.println("Q++ " + whiteTurn);
                         return MoveType.KILL;
                     }
                     i++;
@@ -324,7 +354,31 @@ public class Board {
                     if (board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor)) {
                         System.out.println("Queen here");
                         killedPiece = board[i][j].getPiece();
-                        turnLabel.setText(whiteTurn ? "red's\nturn" : "white's\nturn");
+                        if (forcedKill(rivalColor,newX, newY, oldX, oldY)){
+                            System.out.println("Queen here1");
+                            if (color == white){
+                                System.out.println("QN1");
+                                whiteTurn = true;
+                                turnLabel.setText("white's\nturn");
+                            }
+                            else{
+                                System.out.println("QN2");
+                                whiteTurn = false;
+                                turnLabel.setText("red's\nturn");
+                            }
+                        }
+                        else{
+                            if (color.equals(white)){
+                                System.out.println("QN3");
+                                whiteTurn = false;
+                                turnLabel.setText("red's\nturn");
+                            }
+                            else{
+                                System.out.println("QN4");
+                                whiteTurn = true;
+                                turnLabel.setText("white's\nturn");
+                            }
+                        }
                         return MoveType.KILL;
                     }
                     i++;
@@ -341,20 +395,24 @@ public class Board {
             if (!forcedKill(rivalColor,newX, newY, oldX, oldY)){
                 System.out.println("Queen here1");
                 if (color == white){
-                    whiteTurn = true;
-                    turnLabel.setText("white's\nturn");
-                }
-                else{
+                    System.out.println("QN1");
                     whiteTurn = false;
                     turnLabel.setText("red's\nturn");
+                }
+                else{
+                    System.out.println("QN2");
+                    whiteTurn = true;
+                    turnLabel.setText("white's\nturn");
                 }
             }
             else{
                 if (color.equals(white)){
+                    System.out.println("QN3");
                     whiteTurn = false;
                     turnLabel.setText("red's\nturn");
                 }
                 else{
+                    System.out.println("QN4");
                     whiteTurn = true;
                     turnLabel.setText("white's\nturn");
                 }
