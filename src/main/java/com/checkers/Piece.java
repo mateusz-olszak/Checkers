@@ -19,10 +19,12 @@ public class Piece extends StackPane {
     private Ellipse ellipse;
     private Ellipse bg;
     private Color color;
+    private final int pieceId;
 
-    public Piece(final PieceType type, Color color, int x, int y) {
+    public Piece(final PieceType type, Color color, int x, int y, final int id) {
         this.type = type;
         this.color = color;
+        this.pieceId = id;
 
         move(x, y);
 
@@ -84,6 +86,10 @@ public class Piece extends StackPane {
 
     public Paint getColor() {
         return color;
+    }
+
+    public int getPieceId() {
+        return pieceId;
     }
 
     public void setQueen(Piece piece){
