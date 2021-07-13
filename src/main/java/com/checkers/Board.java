@@ -203,7 +203,12 @@ public class Board {
                     turnLabel.setText("white's\nturn");
                     return MoveType.NORMAL;
                 }
-                else System.out.println("normal red if true");
+                else{
+                    System.out.println("here normal red if true");
+                    whiteTurn = true;
+                    turnLabel.setText("white's\nturn");
+                    return MoveType.NORMAL;
+                }
             }
             if (Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * 2 && piece.getColor().equals(red) || Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * -2 && piece.getColor().equals(red)) {
 
@@ -223,11 +228,11 @@ public class Board {
             }
         }
 
-            //queen:
-            if (piece.getType() == PieceType.queenRed){
-                return validateQueen(piece, red, white, piece.getType(),oldX, oldY, newX, newY);
-            }
-
+        //queen:
+        if (piece.getType() == PieceType.queenRed){
+            return validateQueen(piece, red, white, piece.getType(),oldX, oldY, newX, newY);
+        }
+        System.out.println("validate main false");
         return MoveType.NONE;
     }
 
@@ -254,7 +259,9 @@ public class Board {
             }
         }
         if (newY > 1 && newX < 6 && board[newX+1][newY-1].hasPiece() && board[newX+1][newY-1].getPiece().getColor().equals(rivalColor)){
+            System.out.println("+-here1");
             if (!board[newX+2][newY-2].hasPiece()){
+                System.out.println("+-here2");
                 forcedX = newX + 2;
                 forcedY = newY - 2;
                 return true;
@@ -268,6 +275,7 @@ public class Board {
             }
         }
 
+        System.out.println("main false");
         return false;
     }
 
@@ -330,7 +338,27 @@ public class Board {
             oldX - newX == 1 * (oldY - newY) && piece.getColor().equals(color) && piece.getType() == type
         ) {
             System.out.println("queen normal here");
-            turnLabel.setText(whiteTurn ? "red's\nturn" : "white's\nturn");
+            if (!forcedKill(rivalColor,newX, newY, oldX, oldY)){
+                System.out.println("Queen here1");
+                if (color == white){
+                    whiteTurn = true;
+                    turnLabel.setText("white's\nturn");
+                }
+                else{
+                    whiteTurn = false;
+                    turnLabel.setText("red's\nturn");
+                }
+            }
+            else{
+                if (color.equals(white)){
+                    whiteTurn = false;
+                    turnLabel.setText("red's\nturn");
+                }
+                else{
+                    whiteTurn = true;
+                    turnLabel.setText("white's\nturn");
+                }
+            }
             return MoveType.NORMAL;
         }
 
