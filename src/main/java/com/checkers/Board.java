@@ -136,6 +136,7 @@ public class Board {
         int y1 = oldY + (newY - oldY) /2;
 
         if (whiteTurn){
+            System.out.println("fX: " + forcedX + " fY: " + forcedY);
             if (piece.getColor().equals(white) && oldY == 0 || piece.getColor().equals(white) && newY == 0 && oldY == 1 || piece.getColor().equals(white) && newY == 0 && oldY == 2)
                 piece.setQueen(piece);
 
@@ -145,15 +146,15 @@ public class Board {
             if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0){
                 return MoveType.NONE;
             }
-
             if (Math.abs(newX - oldX) == 1 && newY - oldY == piece.getType().moveDir && piece.getType() == PieceType.UP && piece.getColor().equals(white)) {
-                if (!forcedKill(red,newX,newY,oldX,oldY)){
-                    System.out.println("here normal white");
-                    whiteTurn = false;
-                    turnLabel.setText("red's\nturn");
-                    return MoveType.NORMAL;
-                }else{
-                    System.out.println("here normal white");
+                if (hasNext(white,red) && newX != forcedX && newY != forcedY){
+                    System.out.println("here normal white1");
+                    whiteTurn = true;
+                    turnLabel.setText("white's\nturn");
+                    return MoveType.NONE;
+                }
+                if (!hasNext(white,red)){
+                    System.out.println("here normal white2");
                     whiteTurn = false;
                     turnLabel.setText("red's\nturn");
                     return MoveType.NORMAL;
@@ -162,7 +163,7 @@ public class Board {
 
             if (Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * 2 && piece.getColor().equals(white) || Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * -2 && piece.getColor().equals(white)){
                 if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
-                    if (forcedKill(red, newX, newY, oldX, oldY)) {
+                    if (forcedKill(red, newX, newY)) {
                         killedPiece = board[x1][y1].getPiece();
                         whiteTurn = true;
                         turnLabel.setText("white's\nturn");
@@ -194,14 +195,14 @@ public class Board {
                 return MoveType.NONE;
 
             if (Math.abs(newX - oldX) == 1 && newY - oldY == piece.getType().moveDir && piece.getType() == PieceType.DOWN && piece.getColor().equals(red)) {
-                if (!forcedKill(white,newX,newY,oldX,oldY)){
-                    System.out.println("here normal red");
-                    whiteTurn = true;
-                    turnLabel.setText("white's\nturn");
-                    return MoveType.NORMAL;
+                if (hasNext(red,white) && newX != forcedX && newY != forcedY){
+                    System.out.println("here normal white1");
+                    whiteTurn = false;
+                    turnLabel.setText("red's\nturn");
+                    return MoveType.NONE;
                 }
-                else{
-                    System.out.println("here normal red if true");
+                if (!hasNext(red,white)){
+                    System.out.println("here normal white2");
                     whiteTurn = true;
                     turnLabel.setText("white's\nturn");
                     return MoveType.NORMAL;
@@ -210,7 +211,7 @@ public class Board {
             if (Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * 2 && piece.getColor().equals(red) || Math.abs(newX - oldX) == 2 && newY - oldY == piece.getType().moveDir * -2 && piece.getColor().equals(red)) {
 
                 if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
-                    if (forcedKill(white,newX,newY,oldX,oldY)){
+                    if (forcedKill(white,newX,newY)){
                         killedPiece = board[x1][y1].getPiece();
                         whiteTurn = false;
                         turnLabel.setText("red's\nturn");
@@ -242,21 +243,16 @@ public class Board {
         return (int) (pixel + tileSize / 2) / tileSize;
     }
 
-    private boolean forcedKill(Color rivalColor,int newX, int newY, int oldX, int oldY){
-
+    private boolean forcedKill(Color rivalColor,int newX, int newY){
 
         if (newX > 1 && newY > 1 && board[newX-1][newY-1].hasPiece() && board[newX-1][newY-1].getPiece().getColor().equals(rivalColor)){
             if (!board[newX-2][newY-2].hasPiece()){
-                forcedX = newX - 2;
-                forcedY = newY - 2;
                 System.out.println("1 returned true");
                 return true;
             }
         }
         if (newX > 1 && newY < 6 && board[newX-1][newY+1].hasPiece() && board[newX-1][newY+1].getPiece().getColor().equals(rivalColor)){
             if (!board[newX-2][newY+2].hasPiece()){
-                forcedX = newX - 2;
-                forcedY = newY + 2;
                 return true;
             }
         }
@@ -264,15 +260,11 @@ public class Board {
             System.out.println("+-here1");
             if (!board[newX+2][newY-2].hasPiece()){
                 System.out.println("+-here2");
-                forcedX = newX + 2;
-                forcedY = newY - 2;
                 return true;
             }
         }
         if (newX < 6 && newY < 6 && board[newX+1][newY+1].hasPiece() && board[newX+1][newY+1].getPiece().getColor().equals(rivalColor)){
             if (!board[newX+2][newY+2].hasPiece()){
-                forcedX = newX + 2;
-                forcedY = newY + 2;
                 return true;
             }
         }
@@ -281,7 +273,63 @@ public class Board {
         return false;
     }
 
+    private boolean hasNext(Color color,Color rivalColor){
+        for (int i=0; i<row; i++){
+            for (int j=0; j<column; j++){
+                if ((i+j) % 2 != 0){
+                    try{
+                        if (i < 6 && j > 1 && board[i][j].getPiece().getColor().equals(color) && board[i+1][j-1].hasPiece() && board[i+1][j-1].getPiece().getColor().equals(rivalColor) && !board[i+2][j-2].hasPiece()){
+                            forcedX = i + 2;
+                            forcedY = j - 2;
+                            return true;
+                        }
+                        if (i > 1 && j < 6 && board[i][j].getPiece().getColor().equals(color) && board[i-1][j+1].hasPiece() && board[i-1][j+1].getPiece().getColor().equals(rivalColor) && !board[i-2][j+2].hasPiece()){
+                            forcedX = i - 2;
+                            forcedY = j + 2;
+                            return true;
+                        }
+                        if (i < 6 && j < 6 && board[i][j].getPiece().getColor().equals(color) && board[i+1][j+1].hasPiece() && board[i+1][j+1].getPiece().getColor().equals(rivalColor) && !board[i+2][j+2].hasPiece()){
+                            forcedX = i + 2;
+                            forcedY = j + 2;
+                            return true;
+                        }
+                        if (i > 1 && j > 1 && board[i][j].getPiece().getColor().equals(color) && board[i-1][j-1].hasPiece() && board[i-1][j-1].getPiece().getColor().equals(rivalColor) && !board[i-2][j-2].hasPiece()){
+                            forcedX = i - 2;
+                            forcedY = j - 2;
+                            return true;
+                        }
+                    }catch (NullPointerException e) {
+                        continue;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
+    private boolean validateForcedQueen(Color rivalColor, int oldX, int oldY, int newX, int newY){
+        //for loop to scan left side wheter it contains seperate rivalColor to kill it
+        // and receive forcedXY from that
+        if (newX < oldX){
+            for (int i=0; i<newX; i++){
+                for (int j=0; j<column; j++){
+                     if ((i+j) % 2 != 0){
+                         try{
+                             if (i > 0 && j > 0 && board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor) && !board[i-1][j-1].hasPiece()){
+                                 System.out.println("i: " + i + " j: " + j);
+                                 forcedX = i - 1;
+                                 forcedY = j - 1;
+                             }
+                         }catch (NullPointerException e){
+                             continue;
+                         }
+                     }
+                }
+            }
+        }
+
+        return false;
+    }
 
     private MoveType validateQueen(Piece piece, Color color, Color rivalColor, PieceType type,int oldX, int oldY, int newX, int newY) {
         int i = oldX;
@@ -291,20 +339,56 @@ public class Board {
                 while (i != newX) {
                     if (board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor)) {
                         killedPiece = board[i][j].getPiece();
-                        turnLabel.setText(whiteTurn ? "red's\nturn" : "white's\nturn");
-                        whiteTurn = whiteTurn ? false : true;
-                        return MoveType.KILL;
+                        if (forcedKill(rivalColor,newX, newY)){
+                            if (color == white){
+                                whiteTurn = true;
+                                turnLabel.setText("white's\nturn");
+                            }
+                            else{
+                                whiteTurn = false;
+                                turnLabel.setText("red's\nturn");
+                            }
+                        }
+                        else{
+                            if (color.equals(white)){
+                                whiteTurn = false;
+                                turnLabel.setText("red's\nturn");
+                            }
+                            else{
+                                whiteTurn = true;
+                                turnLabel.setText("white's\nturn");
+                            }
+                        }
                     }
                     i--;
                     j++;
                 }
             }
+
             if (newX - oldX == 1 * (newY - oldY) && piece.getColor().equals(color) && piece.getType() == type) {
                 while (i != newX) {
                     if (board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor)) {
                         killedPiece = board[i][j].getPiece();
-                        turnLabel.setText(whiteTurn ? "red's\nturn" : "white's\nturn");
-                        whiteTurn = whiteTurn ? false : true;
+                        if (forcedKill(rivalColor,newX, newY)){
+                            if (color == white){
+                                whiteTurn = true;
+                                turnLabel.setText("white's\nturn");
+                            }
+                            else{
+                                whiteTurn = false;
+                                turnLabel.setText("red's\nturn");
+                            }
+                        }
+                        else{
+                            if (color.equals(white)){
+                                whiteTurn = false;
+                                turnLabel.setText("red's\nturn");
+                            }
+                            else{
+                                whiteTurn = true;
+                                turnLabel.setText("white's\nturn");
+                            }
+                        }
                         return MoveType.KILL;
                     }
                     i--;
@@ -316,33 +400,26 @@ public class Board {
                 while (i != newX) {
                     if (board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor)) {
                         killedPiece = board[i][j].getPiece();
-                        System.out.println("Q++ " + whiteTurn);
-                        if (forcedKill(rivalColor,newX, newY, oldX, oldY)){
-                            System.out.println("Queen here1");
+                        if (forcedKill(rivalColor,newX, newY)){
                             if (color == white){
-                                System.out.println("QN1");
                                 whiteTurn = true;
                                 turnLabel.setText("white's\nturn");
                             }
                             else{
-                                System.out.println("QN2");
                                 whiteTurn = false;
                                 turnLabel.setText("red's\nturn");
                             }
                         }
                         else{
                             if (color.equals(white)){
-                                System.out.println("QN3");
                                 whiteTurn = false;
                                 turnLabel.setText("red's\nturn");
                             }
                             else{
-                                System.out.println("QN4");
                                 whiteTurn = true;
                                 turnLabel.setText("white's\nturn");
                             }
                         }
-                        System.out.println("Q++ " + whiteTurn);
                         return MoveType.KILL;
                     }
                     i++;
@@ -352,29 +429,23 @@ public class Board {
             if (oldX - newX == 1 * (newY - oldY) && piece.getColor().equals(color) && piece.getType() == type) {
                 while (i != newX) {
                     if (board[i][j].hasPiece() && board[i][j].getPiece().getColor().equals(rivalColor)) {
-                        System.out.println("Queen here");
                         killedPiece = board[i][j].getPiece();
-                        if (forcedKill(rivalColor,newX, newY, oldX, oldY)){
-                            System.out.println("Queen here1");
+                        if (forcedKill(rivalColor,newX, newY)){
                             if (color == white){
-                                System.out.println("QN1");
                                 whiteTurn = true;
                                 turnLabel.setText("white's\nturn");
                             }
                             else{
-                                System.out.println("QN2");
                                 whiteTurn = false;
                                 turnLabel.setText("red's\nturn");
                             }
                         }
                         else{
                             if (color.equals(white)){
-                                System.out.println("QN3");
                                 whiteTurn = false;
                                 turnLabel.setText("red's\nturn");
                             }
                             else{
-                                System.out.println("QN4");
                                 whiteTurn = true;
                                 turnLabel.setText("white's\nturn");
                             }
@@ -391,32 +462,30 @@ public class Board {
             Math.abs(newX - oldX) == 1 * (newY - oldY) && piece.getColor().equals(color) && piece.getType() == type ||
             oldX - newX == 1 * (oldY - newY) && piece.getColor().equals(color) && piece.getType() == type
         ) {
-            System.out.println("queen normal here");
-            if (!forcedKill(rivalColor,newX, newY, oldX, oldY)){
-                System.out.println("Queen here1");
+            if (hasNext(color,rivalColor) && newX != forcedX && newY != forcedY)
+                return MoveType.NONE;
+            if (!forcedKill(rivalColor,newX, newY)){
                 if (color == white){
-                    System.out.println("QN1");
                     whiteTurn = false;
                     turnLabel.setText("red's\nturn");
                 }
                 else{
-                    System.out.println("QN2");
                     whiteTurn = true;
                     turnLabel.setText("white's\nturn");
                 }
             }
             else{
                 if (color.equals(white)){
-                    System.out.println("QN3");
                     whiteTurn = false;
                     turnLabel.setText("red's\nturn");
                 }
                 else{
-                    System.out.println("QN4");
                     whiteTurn = true;
                     turnLabel.setText("white's\nturn");
                 }
             }
+            System.out.println("queen normal");
+            validateForcedQueen(rivalColor, oldX, oldY, newX, newY);
             return MoveType.NORMAL;
         }
 
